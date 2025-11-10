@@ -1,0 +1,27 @@
+node_modules/
+.env
+cache/
+artifacts/
+typechain-types/
+coverage/
+*.log
+
+# UI
+ui/node_modules/
+ui/.next/
+ui/out/
+
+# SDK
+sdk/node_modules/
+sdk/dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+

@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile.gateway
+    ports:
+      - "3000:3000"
+    environment:
+      - GATEWAY_PRIVATE_KEY=${GATEWAY_PRIVATE_KEY}
+      - PORT=3000
+      - NODE_ENV=production
+    volumes:
+      - ./gateway:/app/gateway
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  ui:
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3000"
+    environment:
+      - GATEWAY_URL=http://gateway:3000
+      - NODE_ENV=production
+    depends_on:
+      - gateway
+    restart: unless-stopped
+
+  # Optional: Redis for rate limiting and caching
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+
+volumes:
+  redis-data:
+
